@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+<!--    提取数据库配置文件到db.properties
+
+        加载数据库配置文件
+  -->
+    <properties resource="Config/db.properties">
+
+<!--       优先加载内部标签，然后再resource或url-->
+<!--        <property name="" value=""/>-->
+    </properties>
+
+
+<!--    别名定义-->
+
+    <typeAliases>
+<!--        单个别名定义-->
+        <typeAlias type="ClassMap.User" alias="User"></typeAlias>
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+               <property name="driver" value="${jdbc.driver}" />
+                <property name="url" value="${jdbc.url}" />
+                <property name="username" value="${jdbc.username}" />
+                <property name="password" value="${jdbc.password}" />
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+<!--        加载源文件-->
+        <mapper resource="Config/SqlMap/User.xml" />
+        <mapper resource="Config/mapper/UserMapper.xml"></mapper>
+    </mappers>
+</configuration>
+
