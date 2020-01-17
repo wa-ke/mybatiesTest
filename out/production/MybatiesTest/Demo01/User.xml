@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace:对sql进行分类化管理-->
+<mapper namespace="test">
+<!--    id: 标识sql语句,将sql语句封装到mapperStatement中，是statement的id-->
+<!--     #{}:表示一个占位符; parameterType: 指定输入类型;resultType: 指定输出的结果类型，将映射一个POJO类-->
+<!--    id: 表示接收输入的参数；
+    如果输入参数是简单类型#{}中的参数名可以任意
+-->
+
+<!--    根据id查询一条记录-->
+    <select id="findUserById" parameterType="int" resultType="Demo01.User">
+    select * from user where id = #{id}
+    </select>
+
+
+<!--
+
+${}: 表示拼接字符串将接收到的字符串不加修饰的添加到sql语句中,
+可能会引起sql注入；
+如果输入参数是简单类型，只能是${value}
+
+-->
+<!--    模糊查询-->
+    <select id="findUserByName" parameterType="string" resultType="Demo01.User">
+        select * from user where name like '%${value}%'
+    </select>
+
+
+<!--
+
+添加用户
+#{}：使用POJO的属性名，通过OGNL获取
+-->
+    <insert id="addUser" parameterType="Demo01.User">
+<!--
+将插入的数据的主键返回
+LAST_INSERT_ID()：获取刚刚插入的数据的主键值，只适用于自增主键
+keyProperty：将查询到的主键设置到指定的parameterType中的指定属性中去
+order：insert语句执行顺序
+
+相当于触发器
+-->
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+
+
+<!--
+
+非自增版本
+插入之前执行
+    <selectKey keyProperty="id" order="before" resultType="java.lang.String">
+                select uuid()
+    </selectKey>
+
+
+-->
+        insert into user(name, password, birthday)  value(#{name},#{password},#{birthday})
+    </insert>
+
+<!--    删除用户-->
+    <delete id="delUser" parameterType="int">
+        delete from user where id = #{id}
+    </delete>
+<!--    更新用户-->
+    <update id="updateUser" parameterType="Demo01.User">
+        update user set name = #{name},password = #{password},birthday = #{birthday} where id = #{id}
+    </update>
+</mapper>

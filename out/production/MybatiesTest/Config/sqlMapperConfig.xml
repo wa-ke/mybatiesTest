@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+
+<!--引入外部配置文件-->
+    <properties resource="Config/db.properties"></properties>
+
+<!--    定义别名-->
+    <typeAliases>
+<!--        单个别名定义-->
+        <typeAlias type="Demo01.User" alias="user"></typeAlias>
+
+<!--批量别名定义
+mybatis会自动扫描包里的POJO类，自动定义别名，名字就是类名，首字母不区分大小写
+-->
+<!--    <package name="Demo01"/>-->
+
+    </typeAliases>
+
+<!--  和Spring整合后放弃  -->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC" />
+<!--            连接池-->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}" />
+                <property name="url" value="${jdbc.url}" />
+                <property name="username" value="${jdbc.username}" />
+                <property name="password" value="${jdbc.password}" />
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+<!--        单个文件引入-->
+<!--        引入传统dao配置文件-->
+        <mapper resource="Demo01/User.xml"></mapper>
+
+<!--        引入映射文件-->
+<!--        <mapper resource="Demo03/UserMapper.xml"></mapper>-->
+
+<!--        通过映射接口加载配置文件
+    规范要求，mapper映射文件名和接口名一致，且在一个目录
+-->
+<!--        <mapper class="Demo03.UserMapper"></mapper>-->
+        
+<!--        批量加载
+自动扫描包里面的mapper接口，并添加
+-->
+        <package name="Demo03"/>
+    </mappers>
+</configuration>
