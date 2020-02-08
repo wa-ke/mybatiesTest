@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserTest {
@@ -70,13 +71,32 @@ public class UserTest {
         UserQueryVo userQueryVo = new UserQueryVo();
         UserCustomer userCustomer = new UserCustomer();
         userCustomer.setName("s");
+//        动态sql
         userCustomer.setPassword("a");
-
+//        数组查询
+        List<Integer> integers = new ArrayList<>();
+        integers.add(1);
+        integers.add(2);
+        userQueryVo.setIntegers(integers);
         userQueryVo.setUserCustomer(userCustomer);
 
         int count =  userMapper.findUserCount(userQueryVo);
 
         System.out.println(count);
 
+    }
+
+//    resultMap映射查询
+    @Test
+    public void findUserByIdResultMap() throws IOException {
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().
+                build(Resources.getResourceAsStream("Config/sqlMapperConfig.xml"));
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+
+        //创建mapper对象,mybatis自动生成mapper代理对象
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+
+        User user = userMapper.findUserByIdResultMap(1);
+        System.out.println(user);
     }
 }

@@ -1,31 +1,20 @@
-package Demo01;
-
-import Demo05.Orders;
+package Demo05;
 
 import java.util.Date;
-import java.util.List;
 
-public class User {
+//继承字段较多的POJO类
+public class OrdersCustom extends Orders {
     private int id;
     private String name;
     private String password;
     private Date birthday;
 
-//    多对多映射
-    private List<Orders> orders;
-
-    public List<Orders> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Orders> orders) {
-        this.orders = orders;
-    }
-
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public void setId(int id) {
         this.id = id;
     }
@@ -52,15 +41,5 @@ public class User {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", birthday=" + birthday +
-                '}';
     }
 }

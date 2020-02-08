@@ -37,6 +37,7 @@ mybatis会自动扫描包里的POJO类，自动定义别名，名字就是类名
 <!--        单个文件引入-->
 <!--        引入传统dao配置文件-->
         <mapper resource="Demo01/User.xml"></mapper>
+        <mapper resource="Demo05/OrdersMapper.xml"></mapper>
 
 <!--        引入映射文件-->
 <!--        <mapper resource="Demo03/UserMapper.xml"></mapper>-->

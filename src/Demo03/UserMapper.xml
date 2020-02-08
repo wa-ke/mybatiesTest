@@ -6,6 +6,38 @@
 
 <!--namespace:对sql进行分类化管理-->
 <mapper namespace="Demo03.UserMapper">
+
+<!--    定义sql片段
+    经验：是基于单表来定义sql片段，这样的话sql片段可重用性才高
+    一般不包括where标签
+-->
+    <sql id="query_user">
+        <if test="userCustomer != null">
+            <if test="userCustomer.password != null and userCustomer.password != ''">
+                and password like '%${userCustomer.password}%'
+            </if>
+            <if test="userCustomer.name != null and userCustomer.name != ''">
+                and name like '%${userCustomer.name}%'
+            </if>
+            <if test="integers != null">
+<!-- foreach：数组和list操作
+conllections:指定输入对象集合属性
+item: 遍历每个对象
+open: 开始遍历时拼接串
+close: 结束时拼接串
+or: 遍历两个对象中需要的串
+
+以下实现：
+AND( id = ? or id = ? )
+-->
+                <foreach collection="integers" item="user_id" open="AND(" close=")" separator="or">
+                    id = #{user_id}
+                </foreach>
+            </if>
+        </if>
+
+    </sql>
+
 <!--    id: 标识sql语句,将sql语句封装到mapperStatement中，是statement的id-->
 <!--     #{}:表示一个占位符; parameterType: 指定输入类型;resultType: 指定输出的结果类型，将映射一个POJO类-->
 <!--    id: 表示接收输入的参数；
@@ -81,7 +113,40 @@ order：insert语句执行顺序
 
 <!--    用户信息的综合查询-->
     <select id="findUserCount" parameterType="Demo04.UserQueryVo" resultType="int">
-        select count(*) from user where password like '%${userCustomer.password}%' and name like '%${userCustomer.name}%'
+        select count(*) from user
+<!-- 动态sql，自动拼接sql语句-->
+    <where>
+<!--     where会自动去掉第一个and-->
+<!--        <if test="userCustomer != null">-->
+<!--            <if test="userCustomer.password != null and userCustomer.password != ''">-->
+<!--                and password like '%${userCustomer.password}%'-->
+<!--            </if>-->
+<!--            <if test="userCustomer.name != null and userCustomer.name != ''">-->
+<!--                and name like '%${userCustomer.name}%'-->
+<!--            </if>-->
+<!--        </if>-->
+
+<!-- 引用sql片段-->
+<include refid="query_user"></include>
+    </where>
 
     </select>
+
+    <!--    定义resultMap
+    将查询的结果进行映射
+    -->
+    <resultMap id="userResultMap" type="user">
+<!--        定义POJO中的属性对表的列名的映射,唯一标示列id-->
+        <id column="id_" property="id"></id>
+<!--        对普通列的映射配置-->
+        <result column="name_" property="name"></result>
+    </resultMap>
+<!--    使用resultMap进行输出映射
+        resultMap: 指定定义的resultMap的id，如果是在其他文件中要前面要加namespace
+-->
+    <select id="findUserByIdResultMap" parameterType="int" resultMap="userResultMap">
+        select id id_, name name_ from user where id = #{value}
+    </select>
+
+
 </mapper>

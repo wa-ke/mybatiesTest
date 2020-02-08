@@ -24,4 +24,7 @@ public interface UserMapper {
 
     //综合总数查询
     int findUserCount(UserQueryVo userQueryVo);
+
+    //resultMap查询
+    User findUserByIdResultMap(int id);
 }

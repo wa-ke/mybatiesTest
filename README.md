@@ -70,4 +70,56 @@ plugins: 插件
 自动扫描包里面的mapper接口，并添加
 -->
         <package name="Demo03"/>
+
+<!--    定义sql片段
+    经验：是基于单表来定义sql片段，这样的话sql片段可重用性才高
+    一般不包括where标签
+-->
+    <sql id="query_user">
+        <if test="userCustomer != null">
+            <if test="userCustomer.password != null and userCustomer.password != ''">
+                and password like '%${userCustomer.password}%'
+            </if>
+            <if test="userCustomer.name != null and userCustomer.name != ''">
+                and name like '%${userCustomer.name}%'
+            </if>
+        </if>
+
+    </sql>
+
+<!--    用户信息的综合查询-->
+    <select id="findUserCount" parameterType="Demo04.UserQueryVo" resultType="int">
+        select count(*) from user
+<!-- 动态sql，自动拼接sql语句-->
+    <where>
+<!--     where会自动去掉第一个and，等于sql中的where，会自动拼接到sql语句中-->
+    <if test="userCustomer != null">
+            <if test="userCustomer.password != null and userCustomer.password != ''">
+                and password like '%${userCustomer.password}%'
+            </if>
+            <if test="userCustomer.name != null and userCustomer.name != ''">
+                and name like '%${userCustomer.name}%'
+            </if>
+        </if>
+<!-- 引用sql片段-->
+<include refid="query_user"></include>
+    </where>
+
+    </select>
+
+
+
+```
+
+## Demo05
+
+```text
+一对一：
+resultType: 不可实现延迟加载
+resultMap: 可实现延迟加载
+
+一对一映射使用association，存储到POJO中
+一对多或多对多使用collocation，可嵌套使用: 存储到list中
+只需要一条集合记录可使用resultType
+多条记录展示可使用resultMap
 ```
